@@ -1,14 +1,12 @@
 //
-//  SPrimitiveCylinder.cpp
+//  SPrimitiveCone.cpp
 //  3DCocos
 //
 //  Created by Yifeng Wu on 03/11/14.
 //
 //
 
-#include <vector>
-
-#include "SPrimitiveCylinder.h"
+#include "SPrimitiveCone.h"
 #include "SShaderProgram.h"
 #include "SMesh.h"
 
@@ -17,8 +15,8 @@ USING_NS_CC;
 
 NS_S_BEGIN
 
-SPrimitiveCylinder* SPrimitiveCylinder::create(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
-    auto ret = new SPrimitiveCylinder();
+SPrimitiveCone* SPrimitiveCone::create(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
+    auto ret = new SPrimitiveCone();
     if (ret && ret->init(bottomCenter, radius, height, detail)) {
         ret->autorelease();
         return ret;
@@ -27,44 +25,37 @@ SPrimitiveCylinder* SPrimitiveCylinder::create(cocos2d::Vec3 bottomCenter, float
     return nullptr;
 }
 
-bool SPrimitiveCylinder::init(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
-    
-    mesh = getCylinderMesh(bottomCenter, radius, height, detail);
+bool SPrimitiveCone::init(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
+    mesh = getConeMesh(bottomCenter, radius, height, detail);
     mesh->retain();
     
     SShaderProgram *defaultShader = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
     
     setShader(defaultShader);
     
-    _renderCommand.func = CC_CALLBACK_0(SPrimitiveCylinder::renderFunc, this);
+    _renderCommand.func = CC_CALLBACK_0(SPrimitiveCone::renderFunc, this);
     
     return true;
 }
 
-SMesh* SPrimitiveCylinder::getCylinderMesh(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
+SMesh* SPrimitiveCone::getConeMesh(cocos2d::Vec3 bottomCenter, float radius, float height, int detail) {
     float degreeOffset = 360 / detail;
     float currentDegree = 0;
     
     vector<GLfloat> vertices;
     
     vertices.push_back(bottomCenter.x);
-    vertices.push_back(0);
+    vertices.push_back(bottomCenter.y);
     vertices.push_back(bottomCenter.z);
     
     vertices.push_back(bottomCenter.x);
-    vertices.push_back(height);
+    vertices.push_back(bottomCenter.y + height);
     vertices.push_back(bottomCenter.z);
     
     for (int i=0; i<detail; i++) {
         float x = bottomCenter.x + radius * cos(CC_DEGREES_TO_RADIANS(currentDegree));
         float z = bottomCenter.z + radius * sin(CC_DEGREES_TO_RADIANS(currentDegree));
-        float y = 0;
-        
-        vertices.push_back(x);
-        vertices.push_back(y);
-        vertices.push_back(z);
-        
-        y = height;
+        float y = bottomCenter.y;
         
         vertices.push_back(x);
         vertices.push_back(y);
@@ -75,22 +66,17 @@ SMesh* SPrimitiveCylinder::getCylinderMesh(cocos2d::Vec3 bottomCenter, float rad
     
     vector<GLuint> indices;
     
-    for (int i=2; i<2+detail*2; i++) {
+    for (int i=2; i<2+detail; i++) {
         int currentIndice = i;
-        int nextIndice = i+1 >= 2+detail*2 ? i+1-detail*2 : i+1;
-        int nextNextIndex = i+2 >= 2+detail*2 ? i+2-detail*2 : i+2;
+        int nextIndice = i+1 >= 2+detail ? i+1-detail : i+1;
+        
+        indices.push_back(0);
         indices.push_back(currentIndice);
         indices.push_back(nextIndice);
-        indices.push_back(nextNextIndex);
         
-        if (currentIndice % 2 == 0) {
-            indices.push_back(0);
-        }
-        else {
-            indices.push_back(1);
-        }
+        indices.push_back(1);
         indices.push_back(currentIndice);
-        indices.push_back(nextNextIndex);
+        indices.push_back(nextIndice);
     }
     
     return SMesh::create(vertices, indices, GL_TRIANGLES);

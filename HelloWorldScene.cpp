@@ -9,6 +9,7 @@
 #include "SMatrixProvider.h"
 #include "SPrimitiveBox.h"
 #include "SPrimitiveCylinder.h"
+#include "SPrimitiveCone.h"
 
 USING_NS_CC;
 USING_NS_S;
@@ -117,33 +118,8 @@ bool HelloWorld::init()
     axisZ->setRotation3D(Vec3(90, 0, 0));
     container3D->addChild(axisZ);
     
-//    int verticesCount = (model->mesh->vertices).size();
-//    for (int i=0, j=0; i<verticesCount; j++) {
-//        float x = model->mesh->vertices[i++];
-//        float y = model->mesh->vertices[i++];
-//        float z = model->mesh->vertices[i++];
-//        CCLOG("vertex %d: (%f, %f, %f)", j, x, y, z);
-//    }
-//    
-//    int normalsCount = (model->mesh->normals).size();
-//    for (int i=0, j=0; i<normalsCount; j++) {
-//        float x = model->mesh->normals[i++];
-//        float y = model->mesh->normals[i++];
-//        float z = model->mesh->normals[i++];
-//        CCLOG("normal %d: (%f, %f, %f)", j, x, y, z);
-//    }
-//    
-//    int facesCount = (model->mesh->indices
-//).size();
-//    for (int i=0, j=0; i<facesCount; j++) {
-//        unsigned short v1 = model->mesh->indices[i++];
-//        unsigned short v2 = model->mesh->indices[i++];
-//        unsigned short v3 = model->mesh->indices[i++];
-//        CCLOG("face %d: (%d, %d, %d)", j, v1, v2, v3);
-//    }
-//    
-//    CCLOG("vertices size: %lu", model->mesh->vertices.size());
-//    CCLOG("indices size: %lu", model->mesh->indices.size());
+    SPrimitiveCone* coneX = SPrimitiveCone::create(Vec3(0, 30, 0), 1, 2, 50);
+    container3D->addChild(coneX);
     
     return true;
 }
