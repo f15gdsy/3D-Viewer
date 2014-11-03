@@ -77,10 +77,9 @@ bool SPrimitiveBox::init(std::vector<GLfloat> vertices, std::vector<GLuint> indi
     mesh = SMesh::create(vertices, indices, drawMode);
     mesh->retain();
     
-    SShaderProgram *defaultShader = SShaderProgram::create("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    SShaderProgram *defaultShader = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
     
-    _shaderProgram = defaultShader;
-    _shaderProgram->retain();
+    setShader(defaultShader);
     
     _renderCommand.func = CC_CALLBACK_0(SPrimitiveBox::renderFunc, this);
     

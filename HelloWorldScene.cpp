@@ -8,6 +8,7 @@
 #include "SCameraController.h"
 #include "SMatrixProvider.h"
 #include "SPrimitiveBox.h"
+#include "SPrimitiveCylinder.h"
 
 USING_NS_CC;
 USING_NS_S;
@@ -103,6 +104,18 @@ bool HelloWorld::init()
     boundingBox->setWireFrameEnabled(true);
     boundingBox->setScale(scale);
     container3D->addChild(boundingBox);
+    
+    
+    SPrimitiveCylinder* axisY = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    container3D->addChild(axisY);
+    
+    SPrimitiveCylinder* axisX = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    axisX->setRotation3D(Vec3(0, 0, 90));
+    container3D->addChild(axisX);
+    
+    SPrimitiveCylinder* axisZ = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    axisZ->setRotation3D(Vec3(90, 0, 0));
+    container3D->addChild(axisZ);
     
 //    int verticesCount = (model->mesh->vertices).size();
 //    for (int i=0, j=0; i<verticesCount; j++) {
