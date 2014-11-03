@@ -8,6 +8,7 @@ void main()
 {
     //mat3 normalMatrix = transpose(inverse(mat3(S_MMatrix[0], S_MMatrix[1], S_MMatrix[2])));
     mat3 normalMatrix = InversedTransposedModelMatrix;
+    //mat3 normalMatrix = gl_NormalMatrix;
 
     vec3 normal = normalize(normalMatrix * Normal_model);
 
@@ -18,7 +19,7 @@ void main()
     float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
     brightness = clamp(brightness, 0.0, 1.0);
 
-    gl_FragColor = brightness * vec4(5, 10, 1, 1) * vec4(0.5, 0.2, 0.4, 1) + vec4(0.2, 0.5, 0.1, 1);
+    gl_FragColor = vec4(brightness * 1.0 * vec3(0.4, 0.6, 0), 1.0);
 
     // gl_FragColor = vec4(Normal_model, 1);
 	// Output color = red

@@ -1,0 +1,11 @@
+
+varying vec3 Normal_model;
+
+
+void main()
+{
+
+	// Output color = red 
+	gl_FragColor = vec4(Normal_model,1);
+
+}

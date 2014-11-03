@@ -14,6 +14,7 @@
 #include "SShaderProgram.h"
 #include "SMesh.h"
 #include "SMatrixProvider.h"
+#include "SMat3.h"
 
 USING_NS_CC;
 
@@ -56,11 +57,11 @@ SModel3d* SModel3d::create(const std::string &modelPath, Samurai::SShaderProgram
 }
 
 bool SModel3d::init(const std::string &modelPath) {
-//    SShaderProgram* shaderProgram = SShaderProgram::create("lighting.vertexshader", "lighting.fragmentshader");
+    SShaderProgram* shaderProgram = SShaderProgram::create("lighting.vertexshader", "lighting.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("normal.vertexshader", "normal.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("normal_flat.vertexshader", "normal_flat.fragmentshader");
-     SShaderProgram* shaderProgram = SShaderProgram::create("lighting_flat.vertexshader", "lighting_flat.fragmentshader");
+//     SShaderProgram* shaderProgram = SShaderProgram::create("lighting_flat.vertexshader", "lighting_flat.fragmentshader");
     
     return init(modelPath, shaderProgram);
 }
@@ -158,9 +159,10 @@ void SModel3d::updateUniforms() {
     
     uniform = _shaderProgram->getUniform("InversedTransposedModelMatrix");
     if (uniform) {
-        Mat4 inverseTransposed(model);
+        SMat3 inverseTransposed(model);
         inverseTransposed.inverse();
         inverseTransposed.transpose();
+        
         glUniformMatrix3fv(uniform->index, 1, GL_FALSE, inverseTransposed.m);
     }
     
@@ -193,9 +195,7 @@ void SModel3d::clearDrawStates() {
 //    glShadeModel(GL_SMOOTH);
     
     if (_depthTestEnabled) {
-//        CCLOG("Total : %d", _totalSModel3d);
-//        CCLOG("Rendered : %d", _totalSModel3dRendered);
-//        CCLOG("Result : %d", _totalSModel3dRendered >= _totalSModel3d);
+        // Temporary solution to split 2d and 3d
         if (_totalSModel3dRendered >= _totalSModel3d) {
             glClear(GL_DEPTH_BUFFER_BIT);
             _totalSModel3dRendered = 0;
