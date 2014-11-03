@@ -1,0 +1,10 @@
+
+// Input vertex data, different for all executions of this shader.
+attribute vec3 a_position;
+
+void main(){
+
+	gl_Position = S_MVPMatrix * vec4(a_position, 1.0);
+
+}
+

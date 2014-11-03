@@ -1,0 +1,27 @@
+varying vec3 Normal_model;
+varying vec3 Position_model;
+
+uniform vec3 LightPosition_world;
+uniform mat3 InversedTransposedModelMatrix;
+
+void main()
+{
+    //mat3 normalMatrix = transpose(inverse(mat3(S_MMatrix[0], S_MMatrix[1], S_MMatrix[2])));
+    mat3 normalMatrix = InversedTransposedModelMatrix;
+
+    vec3 normal = normalize(normalMatrix * Normal_model);
+
+    vec3 fragPosition = vec3(S_MMatrix * vec4(Position_model, 1));
+
+    vec3 surfaceToLight = LightPosition_world - fragPosition;
+
+    float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
+    brightness = clamp(brightness, 0.0, 1.0);
+
+    gl_FragColor = brightness * vec4(5, 10, 1, 1) * vec4(0.5, 0.2, 0.4, 1) + vec4(0.2, 0.5, 0.1, 1);
+
+    // gl_FragColor = vec4(Normal_model, 1);
+	// Output color = red
+	// gl_FragColor = vec4(1,0,0,1);
+
+}
