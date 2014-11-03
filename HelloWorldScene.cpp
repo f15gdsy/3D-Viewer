@@ -101,6 +101,7 @@ bool HelloWorld::init()
     containerModel->addChild(boundingBox);
     
     container3D->addChild(createAxisSystem());
+    container3D->addChild(createFloor(20, 5));
     
     return true;
 }
@@ -153,4 +154,26 @@ Node* HelloWorld::createAxisSystem() {
     axisSystemContainer->addChild(axisZ);
     
     return axisSystemContainer;
+}
+
+Node* HelloWorld::createFloor(int size, float gridSize) {
+    float minX = - size * gridSize / 2;
+    float minZ = minX;
+    
+    Node* floorContainer = Node::create();
+    
+    for (int iX=0; iX<size; iX++) {
+        for (int iZ = 0; iZ<size; iZ++) {
+            Vec3 minXYZ = Vec3(iX*gridSize, 0, iZ*gridSize);
+            Vec3 maxXYZ = Vec3((iX+1)*gridSize, 0, (iZ+1)*gridSize);
+            
+            SPrimitiveBox *grid = SPrimitiveBox::create(minXYZ, maxXYZ);
+            
+            floorContainer->addChild(grid);
+        }
+    }
+    
+    floorContainer->setPosition3D(Vec3(minX, 0, minZ));
+    
+    return floorContainer;
 }

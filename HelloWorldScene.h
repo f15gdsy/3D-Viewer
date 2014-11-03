@@ -25,6 +25,7 @@ private:
     Samurai::SCameraController* _cameraController;
     
     Node* createAxisSystem ();
+    Node* createFloor (int size, float gridSize);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
