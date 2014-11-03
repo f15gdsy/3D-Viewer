@@ -47,9 +47,10 @@ SModel3d* SModel3d::create(const std::string &modelPath, Samurai::SShaderProgram
 }
 
 bool SModel3d::init(const std::string &modelPath) {
-    SShaderProgram* shaderProgram = SShaderProgram::create("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+//    SShaderProgram* shaderProgram = SShaderProgram::create("lighting.vertexshader", "lighting.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("normal.vertexshader", "normal.fragmentshader");
+    SShaderProgram* shaderProgram = SShaderProgram::create("normal_flat.vertexshader", "normal_flat.fragmentshader");
     
     return init(modelPath, shaderProgram);
 }
@@ -161,6 +162,8 @@ void SModel3d::updateDrawStates() {
         glPolygonMode(GL_BACK, GL_LINE);
     }
     
+    glShadeModel(GL_FLAT);
+    
     if (_depthTestEnabled) {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -173,8 +176,10 @@ void SModel3d::clearDrawStates() {
         glPolygonMode(GL_BACK, GL_FILL);
     }
     
+//    glShadeModel(GL_SMOOTH);
+    
     if (_depthTestEnabled) {
-        glDisable(GL_DEPTH_TEST);
+//        glDisable(GL_DEPTH_TEST);
     }
 }
 

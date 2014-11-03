@@ -1,0 +1,11 @@
+#extension GL_EXT_gpu_shader4 : require
+
+flat varying vec3 Normal_model;
+
+void main()
+{
+
+	// Output color = red 
+	gl_FragColor = vec4(Normal_model,1);
+
+}

@@ -1,0 +1,15 @@
+
+#extension GL_EXT_gpu_shader4 : require
+
+// Input vertex data, different for all executions of this shader.
+attribute vec3 a_position;
+attribute vec3 a_normal;
+
+flat varying vec3 Normal_model;
+
+void main(){
+
+	gl_Position = S_MVPMatrix * vec4(a_position, 1.0);
+    Normal_model = a_normal;
+}
+
