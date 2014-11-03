@@ -11,6 +11,7 @@
 #include "base/CCDirector.h"
 #include "base/CCEventDispatcher.h"
 #include "base/CCEventMouse.h"
+#include "base/CCEventTouch.h"
 
 USING_NS_CC;
 
@@ -140,6 +141,7 @@ void SGLViewImp::onGLFWKeyCallback(GLFWwindow *window, int key, int scancode, in
 void SGLViewImp::onGLFWMouseButtonCallback(GLFWwindow *window, int button, int action, int modify) {
     EventMouse::MouseEventType type;
     
+    // Mouse
     if (action == GLFW_PRESS) {
         type = EventMouse::MouseEventType::MOUSE_DOWN;
     }
@@ -152,9 +154,22 @@ void SGLViewImp::onGLFWMouseButtonCallback(GLFWwindow *window, int button, int a
     event.setMouseButton(button);
     event.setCursorPosition(_cursorPosX, _cursorPosY);
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+    
+    // Touch
+    if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT) {
+        intptr_t id = 0;
+        this->handleTouchesBegin(1, &id, &_touchX, &_touchY);
+    }
+    else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT) {
+        intptr_t id = 0;
+        this->handleTouchesEnd(1, &id, &_touchX, &_touchY);
+    }
 }
 
 void SGLViewImp::onGLFWMouseMovedCallback(GLFWwindow *window, double x, double y) {
+    _touchX = (float) x;
+    _touchY = (float) y;
+    
     _cursorPosX = (float) x;
     _cursorPosY = (float) y;
     

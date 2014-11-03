@@ -54,6 +54,9 @@ protected:
     float _cursorPosX;
     float _cursorPosY;
     
+    float _touchX;
+    float _touchY;
+    
 };
 
 NS_S_END

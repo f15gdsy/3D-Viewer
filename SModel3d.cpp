@@ -19,11 +19,20 @@ USING_NS_CC;
 
 NS_S_BEGIN
 
+
+int SModel3d::_totalSModel3d = 0;
+int SModel3d::_totalSModel3dRendered = 0;
+
+SModel3d::SModel3d() {
+    _totalSModel3d++;
+}
+
 SModel3d::~SModel3d() {
     CC_SAFE_DELETE(_shaderProgram);
     if (mesh) {
         mesh->release();
     }
+    _totalSModel3d--;
 }
 
 SModel3d* SModel3d::create(const std::string &modelPath) {
@@ -57,8 +66,6 @@ bool SModel3d::init(const std::string &modelPath) {
 }
 
 bool SModel3d::init(const std::string &modelPath, Samurai::SShaderProgram *shaderProgram) {
-    _depthTestEnabled = true;
-    
     mesh = SMesh::create(modelPath);
     mesh->retain();
     
@@ -76,7 +83,7 @@ void SModel3d::setShader(Samurai::SShaderProgram *shaderProgram) {
 }
 
 void SModel3d::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) {
-    _renderCommand.init(1);
+    _renderCommand.init(-10);
     _renderCommand.func = std::bind(&SModel3d::renderFunc, this);
     
     renderer->addCommand(&_renderCommand);
@@ -95,6 +102,8 @@ void SModel3d::renderFunc() {
     updateDrawStates();
     
     glDrawElements(mesh->getDrawMode(), mesh->indices.size(), GL_UNSIGNED_INT, 0);
+    
+    _totalSModel3dRendered++;
     
     clearDrawStates();
     
@@ -184,7 +193,13 @@ void SModel3d::clearDrawStates() {
 //    glShadeModel(GL_SMOOTH);
     
     if (_depthTestEnabled) {
-//        glDisable(GL_DEPTH_TEST);
+//        CCLOG("Total : %d", _totalSModel3d);
+//        CCLOG("Rendered : %d", _totalSModel3dRendered);
+//        CCLOG("Result : %d", _totalSModel3dRendered >= _totalSModel3d);
+        if (_totalSModel3dRendered >= _totalSModel3d) {
+            glClear(GL_DEPTH_BUFFER_BIT);
+            _totalSModel3dRendered = 0;
+        }
     }
 }
 

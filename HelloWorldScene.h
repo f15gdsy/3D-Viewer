@@ -26,6 +26,11 @@ private:
     
     Node* createAxisSystem ();
     Node* createFloor (int size, float gridSize);
+    Node* createUI ();
+    
+private:
+    // UI callbacks
+    void reset (cocos2d::Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

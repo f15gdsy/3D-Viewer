@@ -24,6 +24,8 @@ class SShaderProgram;
 
 class SModel3d : public cocos2d::Node {
 public:
+    SModel3d();
+    
     static SModel3d* create(const std::string &modelPath);
     static SModel3d* create(const std::string &modelPath, SShaderProgram* shaderProgram);
     
@@ -59,9 +61,12 @@ protected:
     SShaderProgram* _shaderProgram;
   
     bool _wireFrameEnabled;
-    bool _depthTestEnabled;
+    bool _depthTestEnabled = true;
     
     cocos2d::Vec3 _color;
+    
+    static int _totalSModel3d;
+    static int _totalSModel3dRendered;
 };
 
 NS_S_END

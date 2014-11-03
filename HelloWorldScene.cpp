@@ -37,19 +37,19 @@ bool HelloWorld::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-    
-	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + closeItem->getContentSize().height/2));
+//    auto closeItem = MenuItemImage::create(
+//                                           "button_1_default.png",
+//                                           "button_1_pressed.png",
+//                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+//    
+//	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
+//                                origin.y + closeItem->getContentSize().height/2));
+//
+//    auto menu = Menu::create(closeItem, NULL);
+//    menu->setPosition(Vec2::ZERO);
+//    this->addChild(menu, 1);
 
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
-
-
+    this->addChild(createUI(), 1);
 
     Node* container3D = Node::create();
     container3D->setPosition3D(Vec3(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, 0));
@@ -102,6 +102,8 @@ bool HelloWorld::init()
     
     container3D->addChild(createAxisSystem());
     container3D->addChild(createFloor(20, 5));
+//    this->addChild(createUI());
+    
     
     return true;
 }
@@ -176,4 +178,25 @@ Node* HelloWorld::createFloor(int size, float gridSize) {
     floorContainer->setPosition3D(Vec3(minX, 0, minZ));
     
     return floorContainer;
+}
+
+Node* HelloWorld::createUI() {
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    
+    Size contentSize;
+    float margin = 5;
+    
+    auto resetButton = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::reset, this));
+        
+    resetButton->setPosition(origin.x + visibleSize.width - resetButton->getContentSize().width/2 - margin, origin.y + resetButton->getContentSize().height/2 + margin);
+    
+    auto menu = Menu::create(resetButton, NULL);
+    menu->setPosition(Vec2::ZERO);
+
+    return menu;
+}
+
+void HelloWorld::reset(cocos2d::Ref *sender) {
+    CCLOG("Reset...");
 }
