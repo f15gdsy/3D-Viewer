@@ -93,7 +93,8 @@ GLuint SShaderProgram::createShader(std::string shaderPath, GLenum type) {
         "uniform mat4 S_PMatrix;\n"
         "uniform mat4 S_MVMatrix;\n"
         "uniform mat4 S_MVPMatrix;\n"
-        "uniform sampler2D S_Texture0;\n\0",
+        "uniform sampler2D S_Texture0;\n"
+        "uniform vec4 S_Color;\n\0",
         shaderCodePointer
     };
     

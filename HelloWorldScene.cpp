@@ -16,16 +16,10 @@ USING_NS_S;
 
 Scene* HelloWorld::createScene()
 {
-    // 'scene' is an autorelease object
     auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
-
-    // add layer as a child to scene
     scene->addChild(layer);
 
-    // return the scene
     return scene;
 }
 
@@ -33,11 +27,8 @@ HelloWorld::~HelloWorld() {
     CC_SAFE_RELEASE(_cameraController);
 }
 
-// on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if ( !Layer::init() )
     {
         return false;
@@ -63,6 +54,9 @@ bool HelloWorld::init()
     Node* container3D = Node::create();
     container3D->setPosition3D(Vec3(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, 0));
     this->addChild(container3D);
+    
+    Node* containerModel = Node::create();
+    container3D->addChild(containerModel);
     
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     
@@ -92,9 +86,9 @@ bool HelloWorld::init()
     
     model->setScale(scale);
 
-    container3D->addChild(model);
+    containerModel->addChild(model);
     
-    _cameraController = SCameraController::create(container3D);
+    _cameraController = SCameraController::create(containerModel);
     _cameraController->retain();
     
     SMatrixProvider::getInstance()->getProjectionMatrix = std::bind(&SCameraController::getProjectionMatrix, _cameraController);
@@ -104,22 +98,9 @@ bool HelloWorld::init()
     SPrimitiveBox* boundingBox = SPrimitiveBox::create(bound.minXYZ, bound.maxXYZ);
     boundingBox->setWireFrameEnabled(true);
     boundingBox->setScale(scale);
-    container3D->addChild(boundingBox);
+    containerModel->addChild(boundingBox);
     
-    
-    SPrimitiveCylinder* axisY = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
-    container3D->addChild(axisY);
-    
-    SPrimitiveCylinder* axisX = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
-    axisX->setRotation3D(Vec3(0, 0, 90));
-    container3D->addChild(axisX);
-    
-    SPrimitiveCylinder* axisZ = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
-    axisZ->setRotation3D(Vec3(90, 0, 0));
-    container3D->addChild(axisZ);
-    
-    SPrimitiveCone* coneX = SPrimitiveCone::create(Vec3(0, 30, 0), 1, 2, 50);
-    container3D->addChild(coneX);
+    container3D->addChild(createAxisSystem());
     
     return true;
 }
@@ -137,4 +118,39 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+Node* HelloWorld::createAxisSystem() {
+    Node* axisSystemContainer = Node::create();
+    
+    // Axis X
+    SPrimitiveCylinder* axisX = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    axisX->setColor(Vec3(1, 0, 0));
+    SPrimitiveCone* coneX = SPrimitiveCone::create(Vec3(0, 30, 0), 1, 2, 50);
+    coneX->setColor(Vec3(1, 0, 0));
+
+    axisX->addChild(coneX);
+    axisX->setRotation3D(Vec3(0, 0, 90));
+    axisSystemContainer->addChild(axisX);
+    
+    // Axis Y
+    SPrimitiveCylinder* axisY = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    axisY->setColor(Vec3(0, 1, 0));
+    SPrimitiveCone* coneY = SPrimitiveCone::create(Vec3(0, 30, 0), 1, 2, 50);
+    coneY->setColor(Vec3(0, 1, 0));
+    
+    axisY->addChild(coneY);
+    axisSystemContainer->addChild(axisY);
+    
+    // Axis Z
+    SPrimitiveCylinder* axisZ = SPrimitiveCylinder::create(Vec3(0, 0, 0), 0.5, 30, 50);
+    axisZ->setColor(Vec3(0, 0, 1));
+    SPrimitiveCone* coneZ = SPrimitiveCone::create(Vec3(0, 30, 0), 1, 2, 50);
+    coneZ->setColor(Vec3(0, 0, 1));
+    
+    axisZ->addChild(coneZ);
+    axisZ->setRotation3D(Vec3(90, 0, 0));
+    axisSystemContainer->addChild(axisZ);
+    
+    return axisSystemContainer;
 }

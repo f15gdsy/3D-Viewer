@@ -153,7 +153,11 @@ void SModel3d::updateUniforms() {
         inverseTransposed.inverse();
         inverseTransposed.transpose();
         glUniformMatrix3fv(uniform->index, 1, GL_FALSE, inverseTransposed.m);
-        
+    }
+    
+    uniform = _shaderProgram->getUniform("S_Color");
+    if (uniform) {
+        glUniform4f(uniform->index, _color.x, _color.y, _color.z, 1);
     }
 }
 

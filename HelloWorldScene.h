@@ -23,6 +23,8 @@ public:
     
 private:
     Samurai::SCameraController* _cameraController;
+    
+    Node* createAxisSystem ();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

@@ -31,6 +31,10 @@ public:
     void setWireFrameEnabled (bool enabled) {
         _wireFrameEnabled = true;
     }
+    
+    void setColor (cocos2d::Vec3 color) {
+        _color = color;
+    }
 
     SMesh* mesh;
     
@@ -56,6 +60,8 @@ protected:
   
     bool _wireFrameEnabled;
     bool _depthTestEnabled;
+    
+    cocos2d::Vec3 _color;
 };
 
 NS_S_END
