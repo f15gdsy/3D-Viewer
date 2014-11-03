@@ -49,10 +49,14 @@ SModel3d* SModel3d::create(const std::string &modelPath, Samurai::SShaderProgram
 bool SModel3d::init(const std::string &modelPath) {
     SShaderProgram* shaderProgram = SShaderProgram::create("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
+//    SShaderProgram* shaderProgram = SShaderProgram::create("normal.vertexshader", "normal.fragmentshader");
+    
     return init(modelPath, shaderProgram);
 }
 
 bool SModel3d::init(const std::string &modelPath, Samurai::SShaderProgram *shaderProgram) {
+    _depthTestEnabled = true;
+    
     mesh = SMesh::create(modelPath);
     mesh->retain();
     
@@ -109,12 +113,17 @@ void SModel3d::buildVAO() {
     
     glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer());
 
-    glEnableVertexAttribArray(S_ATTRIBUTE_INDEX_POSITION);
-    glVertexAttribPointer(S_ATTRIBUTE_INDEX_POSITION, 3, GL_FLOAT, GL_FALSE, mesh->getVertexRenderDataSize(), 0);
+    // vertex attribute position
+    SAttribute* positionAttribute = _shaderProgram->getAttribute(S_ATTRIBUTE_NAME_POSITION);
+    if (positionAttribute) {
+        glEnableVertexAttribArray(positionAttribute->index);
+        glVertexAttribPointer(positionAttribute->index, 3, GL_FLOAT, GL_FALSE, mesh->getVertexRenderDataSize(), 0);
+    }
     
-    if (mesh->getHasNormal() && _shaderProgram->getAttribute(S_ATTRIBUTE_NAME_NORMAL)) {
-        glEnableVertexAttribArray(S_ATTRIBUTE_INDEX_NORMAL);
-        glVertexAttribPointer(S_ATTRIBUTE_INDEX_NORMAL, 3, GL_FLOAT, GL_FALSE, mesh->getVertexRenderDataSize(), mesh->getPointerToNormal());
+    SAttribute* normalAttribute = _shaderProgram->getAttribute(S_ATTRIBUTE_NAME_NORMAL);
+    if (mesh->getHasNormal() && normalAttribute) {
+        glEnableVertexAttribArray(normalAttribute->index);
+        glVertexAttribPointer(normalAttribute->index, 3, GL_FLOAT, GL_FALSE, mesh->getVertexRenderDataSize(), (void *) (3 * sizeof(GLfloat)));
     }
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->getIndexBuffer());
@@ -151,12 +160,21 @@ void SModel3d::updateDrawStates() {
         glPolygonMode(GL_FRONT, GL_LINE);
         glPolygonMode(GL_BACK, GL_LINE);
     }
+    
+    if (_depthTestEnabled) {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+    }
 }
 
 void SModel3d::clearDrawStates() {
     if (_wireFrameEnabled) {
         glPolygonMode(GL_FRONT, GL_FILL);
         glPolygonMode(GL_BACK, GL_FILL);
+    }
+    
+    if (_depthTestEnabled) {
+        glDisable(GL_DEPTH_TEST);
     }
 }
 

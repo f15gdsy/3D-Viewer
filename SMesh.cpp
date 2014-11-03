@@ -120,7 +120,7 @@ void SMesh::buildBuffer() {
 
     // TODO: Should be more generic
     int numberOfValuesBetweenElement = hasNormal ? 6 : 3;
-    _vertexRenderDataSize = numberOfValuesBetweenElement * sizeof(GL_FLOAT);
+    _vertexRenderDataSize = numberOfValuesBetweenElement * sizeof(GLfloat);
     
     if (hasNormal) {
         _pointerToNormal = &verticesRenderData[3];

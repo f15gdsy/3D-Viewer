@@ -99,10 +99,10 @@ bool HelloWorld::init()
     SMatrixProvider::getInstance()->getViewMatrix = std::bind(&SCameraController::getViewMatrix, _cameraController);
     
     
-//    SPrimitiveBox* boundingBox = SPrimitiveBox::create(bound.minXYZ, bound.maxXYZ);
-//    boundingBox->setWireFrameEnabled(true);
-//    boundingBox->setScale(scale);
-//    container3D->addChild(boundingBox);
+    SPrimitiveBox* boundingBox = SPrimitiveBox::create(bound.minXYZ, bound.maxXYZ);
+    boundingBox->setWireFrameEnabled(true);
+    boundingBox->setScale(scale);
+    container3D->addChild(boundingBox);
     
 //    int verticesCount = (model->mesh->vertices).size();
 //    for (int i=0, j=0; i<verticesCount; j++) {

@@ -55,6 +55,7 @@ protected:
     SShaderProgram* _shaderProgram;
   
     bool _wireFrameEnabled;
+    bool _depthTestEnabled;
 };
 
 NS_S_END
