@@ -50,7 +50,8 @@ bool SModel3d::init(const std::string &modelPath) {
 //    SShaderProgram* shaderProgram = SShaderProgram::create("lighting.vertexshader", "lighting.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("mvp.vertexshader", "mvp.fragmentshader");
 //    SShaderProgram* shaderProgram = SShaderProgram::create("normal.vertexshader", "normal.fragmentshader");
-    SShaderProgram* shaderProgram = SShaderProgram::create("normal_flat.vertexshader", "normal_flat.fragmentshader");
+//    SShaderProgram* shaderProgram = SShaderProgram::create("normal_flat.vertexshader", "normal_flat.fragmentshader");
+     SShaderProgram* shaderProgram = SShaderProgram::create("lighting_flat.vertexshader", "lighting_flat.fragmentshader");
     
     return init(modelPath, shaderProgram);
 }
