@@ -154,7 +154,7 @@ void SMesh::cleanBuffer() {
 }
 
 void SMesh::setDrawMode (GLenum drawMode) {
-    if (drawMode == GL_TRIANGLES || drawMode == GL_LINES) {
+    if (drawMode == GL_TRIANGLES || drawMode == GL_LINES || drawMode == GL_POINTS) {
         _drawMode = drawMode;
     }
     else {

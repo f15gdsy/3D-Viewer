@@ -243,7 +243,33 @@ Node* HelloWorld::createUI() {
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
     button->addChild(text, -1);
 
+    // --------Point Rendering-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::pointRender, this));
     
+    buttonSize = button->getContentSize();
+    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 5);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Point Render", "pixelart.ttf", 18);
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text, -1);
+    
+    // --------Toggle Perspective-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::toggleProjection, this));
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 6);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Toggle Projection", "pixelart.ttf", 18);
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text, -1);
     
     
     menu->setPosition(Vec2::ZERO);
@@ -272,12 +298,14 @@ void HelloWorld::smoothRender(cocos2d::Ref *sender) {
     
     _model->setWireFrameEnabled(false);
     _model->setShader(_shaderProgramNormal);
+    _model->mesh->setDrawMode(GL_TRIANGLES);
 }
 
 void HelloWorld::wireFrameRender(cocos2d::Ref *sender) {
     CCLOG("Wire Frame Render");
     
     _model->setWireFrameEnabled(true);
+    _model->mesh->setDrawMode(GL_TRIANGLES);
 }
 
 void HelloWorld::flatRender(cocos2d::Ref *sender) {
@@ -290,4 +318,18 @@ void HelloWorld::flatRender(cocos2d::Ref *sender) {
     
     _model->setWireFrameEnabled(false);
     _model->setShader(_shaderProgramFlat);
+    _model->mesh->setDrawMode(GL_TRIANGLES);
+}
+
+void HelloWorld::pointRender(cocos2d::Ref *sender) {
+    CCLOG("Point Render");
+    
+    _model->setWireFrameEnabled(false);
+    _model->mesh->setDrawMode(GL_POINTS);
+}
+
+void HelloWorld::toggleProjection (cocos2d::Ref* sender) {
+    CCLOG("Toggle Projection");
+    
+    _cameraController->setPerspective(!_cameraController->getPerspective());
 }

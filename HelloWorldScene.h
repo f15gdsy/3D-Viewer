@@ -45,7 +45,9 @@ private:
     void toggleBoundingBox (cocos2d::Ref* sender);
     void smoothRender (cocos2d::Ref* sender);
     void wireFrameRender (cocos2d::Ref* sender);
-    void flatRender (cocos2d::Ref* flatRender);
+    void flatRender (cocos2d::Ref* sender);
+    void pointRender (cocos2d::Ref* sender);
+    void toggleProjection (cocos2d::Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

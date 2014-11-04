@@ -129,6 +129,15 @@ void SCameraController::updateProjectionMatrix() {
     float zEye = Director::getInstance()->getZEye();
     
     Mat4::createPerspective(60, winSize.width / winSize.height, 10, zEye + winSize.height / 2, &_projectionMatrix);
+    
+    Mat4::createOrthographicOffCenter(-winSize.width/8, winSize.width/8, -winSize.height/8, winSize.height/8, 0, 1024, &_orthographicMatrix);
+}
+
+void SCameraController::setPerspective(bool perspective) {
+    if (_usePerspective != perspective) {
+        _usePerspective = perspective;
+        updateProjectionMatrix();
+    }
 }
 
 

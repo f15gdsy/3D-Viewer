@@ -31,8 +31,18 @@ public:
         _target = target;
     };
     
+    void setPerspective (bool perspective);
+    bool getPerspective () {
+        return _usePerspective;
+    }
+    
     Mat4 getProjectionMatrix () {
-        return _projectionMatrix;
+        if (_usePerspective) {
+            return _projectionMatrix;
+        }
+        else {
+            return _orthographicMatrix;
+        }
     }
     Mat4 getViewMatrix () {
         return _viewMatrix;
@@ -50,6 +60,8 @@ private:
     
     EventListenerMouse* _mouseEventHandler;
     
+    bool _usePerspective = true;
+    
     Node* _target;
     float _previousCursorX;
     float _previousCursorY;
@@ -59,6 +71,7 @@ private:
     float _toTargetAngle;
     
     Mat4 _projectionMatrix;
+    Mat4 _orthographicMatrix;
     Mat4 _viewMatrix;
 };
 
