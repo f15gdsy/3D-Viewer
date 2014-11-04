@@ -30,8 +30,12 @@ public:
     static SModel3d* create(const std::string &modelPath, SShaderProgram* shaderProgram);
     
     void setShader (SShaderProgram* shaderProgram);
+    SShaderProgram* getShaderProgram () {
+        return _shaderProgram;
+    }
+    
     void setWireFrameEnabled (bool enabled) {
-        _wireFrameEnabled = true;
+        _wireFrameEnabled = enabled;
     }
     
     void setColor (cocos2d::Vec3 color) {
@@ -65,7 +69,7 @@ protected:
     
     cocos2d::Vec3 _color;
     
-    static int _totalSModel3d;
+    static int _totalSModel3dToRender;
     static int _totalSModel3dRendered;
 };
 

@@ -6,6 +6,8 @@
 
 NS_S_BEGIN
 class SCameraController;
+class SModel3d;
+class SShaderProgram;
 NS_S_END
 
 class HelloWorld : public cocos2d::Layer
@@ -29,8 +31,21 @@ private:
     Node* createUI ();
     
 private:
-    // UI callbacks
+    // UI
+    Node* _container3D;
+    Node* _containerModel;
+    Samurai::SModel3d* _model;
+    Samurai::SShaderProgram* _shaderProgramNormal;
+    Samurai::SShaderProgram* _shaderProgramFlat;
+
+    
+    Node* _boundingBox;
+    
     void reset (cocos2d::Ref* sender);
+    void toggleBoundingBox (cocos2d::Ref* sender);
+    void smoothRender (cocos2d::Ref* sender);
+    void wireFrameRender (cocos2d::Ref* sender);
+    void flatRender (cocos2d::Ref* flatRender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

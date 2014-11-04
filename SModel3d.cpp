@@ -21,11 +21,10 @@ USING_NS_CC;
 NS_S_BEGIN
 
 
-int SModel3d::_totalSModel3d = 0;
+int SModel3d::_totalSModel3dToRender = 0;
 int SModel3d::_totalSModel3dRendered = 0;
 
 SModel3d::SModel3d() {
-    _totalSModel3d++;
 }
 
 SModel3d::~SModel3d() {
@@ -33,7 +32,6 @@ SModel3d::~SModel3d() {
     if (mesh) {
         mesh->release();
     }
-    _totalSModel3d--;
 }
 
 SModel3d* SModel3d::create(const std::string &modelPath) {
@@ -86,6 +84,8 @@ void SModel3d::setShader(Samurai::SShaderProgram *shaderProgram) {
 void SModel3d::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) {
     _renderCommand.init(-10);
     _renderCommand.func = std::bind(&SModel3d::renderFunc, this);
+    
+    _totalSModel3dToRender++;
     
     renderer->addCommand(&_renderCommand);
 }
@@ -196,9 +196,10 @@ void SModel3d::clearDrawStates() {
     
     if (_depthTestEnabled) {
         // Temporary solution to split 2d and 3d
-        if (_totalSModel3dRendered >= _totalSModel3d) {
+        if (_totalSModel3dRendered >= _totalSModel3dToRender) {
             glClear(GL_DEPTH_BUFFER_BIT);
             _totalSModel3dRendered = 0;
+            _totalSModel3dToRender = 0;
         }
     }
 }
