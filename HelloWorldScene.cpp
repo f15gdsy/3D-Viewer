@@ -13,6 +13,8 @@
 
 #define BTN_POS_X           850
 #define BTN_POS_Y_UNIT      60
+#define FONT_FILE           "PressStart2P.ttf"
+#define FONT_SIZE           14
 
 USING_NS_CC;
 USING_NS_S;
@@ -28,6 +30,10 @@ Scene* HelloWorld::createScene()
 
 HelloWorld::~HelloWorld() {
     CC_SAFE_RELEASE(_cameraController);
+    CC_SAFE_RELEASE(_shaderProgramNormal);
+    CC_SAFE_RELEASE(_shaderProgramFlat);
+    CC_SAFE_RELEASE(_model);
+    CC_SAFE_RELEASE(_boundingBox);
 }
 
 bool HelloWorld::init()
@@ -37,6 +43,8 @@ bool HelloWorld::init()
         return false;
     }
     
+    FileUtils::getInstance()->addSearchPath("Models");
+    
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -44,44 +52,19 @@ bool HelloWorld::init()
     this->addChild(createUI(), 1);
 
     // Create 3D stuff
-    Node* container3D = Node::create();
-    container3D->setPosition3D(Vec3(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, 0));
-    this->addChild(container3D);
+    _container3D = Node::create();
+    _container3D->setPosition3D(Vec3(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y, 0));
+    this->addChild(_container3D);
     
     _containerModel = Node::create();
-    container3D->addChild(_containerModel);
+    _container3D->addChild(_containerModel);
     
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     
-    FileUtils::getInstance()->addSearchPath("Models");
-    std::string filePath = FileUtils::getInstance()->fullPathForFilename("cap.txt");
-    
-    _model = SModel3d::create(filePath);
-    _shaderProgramNormal = _model->getShaderProgram();
-    _shaderProgramNormal->retain();
-    
-    SBound bound = _model->mesh->getBound();
-    float sizeX = bound.getSize().x;
-    float scale = 1;
-    
-    if (sizeX <= 1) {
-        for (scale=10; scale<10000000; scale*=10) {
-            if (sizeX * scale >= 20) {
-                break;
-            }
-        }
-    }
-    else if (sizeX >= 20) {
-        for (scale = 0.1; scale>0.00000001; scale*=0.1) {
-            if (sizeX * scale <= 20) {
-                break;
-            }
-        }
-    }
-    
-    _model->setScale(scale);
-
-    _containerModel->addChild(_model);
+    // Create Default Model
+    SModel3d* model = createModel("cap.txt");
+    SModel3d* boundingBox = createBoundingBox(model);
+    setCurrentModel(model, boundingBox);
     
     _cameraController = SCameraController::create(_containerModel);
     _cameraController->retain();
@@ -90,16 +73,8 @@ bool HelloWorld::init()
     SMatrixProvider::getInstance()->getViewMatrix = std::bind(&SCameraController::getViewMatrix, _cameraController);
     
     
-    SPrimitiveBox* boundingBox = SPrimitiveBox::create(bound.minXYZ, bound.maxXYZ);
-    boundingBox->setWireFrameEnabled(true);
-    boundingBox->setScale(scale);
-    _containerModel->addChild(boundingBox);
-    _boundingBox = boundingBox;
-    _boundingBox->retain();
-    
-    container3D->addChild(createAxisSystem());
-    container3D->addChild(createFloor(20, 5));
-    _container3D = container3D;
+    _container3D->addChild(createAxisSystem());
+    _container3D->addChild(createFloor(20, 5));
     
     
     return true;
@@ -177,6 +152,78 @@ Node* HelloWorld::createFloor(int size, float gridSize) {
     return floorContainer;
 }
 
+SModel3d* HelloWorld::createModel(const std::string &filename) {
+    std::string filePath = FileUtils::getInstance()->fullPathForFilename(filename);
+    
+    SModel3d* model = SModel3d::create(filePath);
+    
+    SBound bound = model->mesh->getBound();
+    float sizeX = bound.getSize().x;
+    float scale = 1;
+    
+    if (sizeX <= 1) {
+        for (scale=10; scale<10000000; scale*=10) {
+            if (sizeX * scale >= 10) {
+                break;
+            }
+        }
+    }
+    else if (sizeX >= 20) {
+        for (scale = 0.1; scale>0.00000001; scale*=0.1) {
+            if (sizeX * scale <= 20) {
+                break;
+            }
+        }
+    }
+    CCLOG("scale: %f", scale);
+    model->setScale(scale);
+    model->setPosition3D(Vec3(0, 0, 0));
+    
+    return model;
+}
+
+SModel3d* HelloWorld::createBoundingBox (SModel3d* model) {
+    SBound bound = model->mesh->getBound();
+    float scale = model->getScaleX();
+    SPrimitiveBox* boundingBox = SPrimitiveBox::create(bound.minXYZ, bound.maxXYZ);
+    boundingBox->setWireFrameEnabled(true);
+    boundingBox->setScale(scale);
+    
+    return boundingBox;
+}
+
+void HelloWorld::setCurrentModel(Samurai::SModel3d* model, Samurai::SModel3d* boundingBox) {
+    if (_model) {
+        _containerModel->removeChild(_model);
+        _model->release();
+        _model = nullptr;
+    }
+    _model = model;
+    _model->retain();
+    _containerModel->addChild(_model);
+    
+    if (!_shaderProgramNormal) {
+        _shaderProgramNormal = _model->getShaderProgram();
+        _shaderProgramNormal->retain();
+    }
+    
+    if (!_shaderProgramFlat) {
+        _shaderProgramFlat = SShaderProgram::create("lighting_flat.vertexshader", "lighting_flat.fragmentshader");
+        _shaderProgramFlat->retain();
+    }
+    
+    if (_boundingBox) {
+        _containerModel->removeChild(_boundingBox);
+        _boundingBox->release();
+        _boundingBox = nullptr;
+    }
+    _boundingBox = boundingBox;
+    _containerModel->addChild(_boundingBox);
+    _boundingBox->retain();
+    
+    _containerModel->setRotation3D(Vec3(0, 0, 0));
+}
+
 Node* HelloWorld::createUI() {
     FileUtils::getInstance()->addSearchPath("fonts");
     
@@ -195,11 +242,12 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
 
-    auto text = Label::createWithTTF("AABB Box", "pixelart.ttf", 18);
+    auto text = Label::createWithTTF("AABB Box", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
     
 // --------Smooth Rendering-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::smoothRender, this));
@@ -209,11 +257,12 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Smooth Render", "pixelart.ttf", 18);
+    text = Label::createWithTTF("Smooth Render", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
     
     // --------Wire Frame Rendering-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::wireFrameRender, this));
@@ -223,11 +272,12 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Wireframe Render", "pixelart.ttf", 18);
+    text = Label::createWithTTF("Wireframe Render", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
     
     // --------Flat Rendering-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::flatRender, this));
@@ -237,11 +287,12 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Flat Render", "pixelart.ttf", 18);
+    text = Label::createWithTTF("Flat Render", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
 
     // --------Point Rendering-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::pointRender, this));
@@ -251,11 +302,12 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Point Render", "pixelart.ttf", 18);
+    text = Label::createWithTTF("Point Render", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
     
     // --------Toggle Perspective-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::toggleProjection, this));
@@ -265,11 +317,44 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Toggle Projection", "pixelart.ttf", 18);
+    text = Label::createWithTTF("Toggle Projection", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
-    button->addChild(text, -1);
+    button->addChild(text);
+    
+    // --------Bunny Model-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
+    button->setName("bunny.txt");
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 7);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Bunny", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    // --------Cap Model-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
+    button->setName("cap.txt");
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 8);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Bunny", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
     
     
     menu->setPosition(Vec2::ZERO);
@@ -311,11 +396,6 @@ void HelloWorld::wireFrameRender(cocos2d::Ref *sender) {
 void HelloWorld::flatRender(cocos2d::Ref *sender) {
     CCLOG("Flat Render");
     
-    if (_shaderProgramFlat == nullptr) {
-        _shaderProgramFlat = SShaderProgram::create("lighting_flat.vertexshader", "lighting_flat.fragmentshader");
-        _shaderProgramFlat->retain();
-    }
-    
     _model->setWireFrameEnabled(false);
     _model->setShader(_shaderProgramFlat);
     _model->mesh->setDrawMode(GL_TRIANGLES);
@@ -332,4 +412,16 @@ void HelloWorld::toggleProjection (cocos2d::Ref* sender) {
     CCLOG("Toggle Projection");
     
     _cameraController->setPerspective(!_cameraController->getPerspective());
+}
+
+void HelloWorld::changeModel (cocos2d::Ref* sender) {
+    Node* senderNode = (Node *) sender;
+    SModel3d* model = createModel(senderNode->getName());
+    model->setName("Model");
+    SModel3d* boundingBox = createBoundingBox(model);
+    setCurrentModel(model, boundingBox);
+    
+    _cameraController->updateMatrices();
+    
+    smoothRender(nullptr);
 }

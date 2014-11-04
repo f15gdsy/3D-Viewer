@@ -15,6 +15,13 @@ USING_NS_CC;
 
 NS_S_BEGIN
 
+SShaderProgram::~SShaderProgram() {
+    if (_programId)
+    {
+        glDeleteProgram(_programId);
+    }
+}
+
 SShaderProgram* SShaderProgram::create(std::string vertexShaderPath, std::string fragmentShaderPath) {
     auto ret = new SShaderProgram();
     if (ret && ret->init(vertexShaderPath, fragmentShaderPath)) {

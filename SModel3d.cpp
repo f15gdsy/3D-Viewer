@@ -24,14 +24,11 @@ NS_S_BEGIN
 int SModel3d::_totalSModel3dToRender = 0;
 int SModel3d::_totalSModel3dRendered = 0;
 
-SModel3d::SModel3d() {
-}
-
 SModel3d::~SModel3d() {
-    CC_SAFE_DELETE(_shaderProgram);
-    if (mesh) {
-        mesh->release();
-    }
+    clearVAO();
+    
+    CC_SAFE_RELEASE(_shaderProgram);
+    CC_SAFE_RELEASE(mesh);
 }
 
 SModel3d* SModel3d::create(const std::string &modelPath) {
@@ -85,6 +82,9 @@ void SModel3d::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform,
     _renderCommand.init(-10);
     _renderCommand.func = std::bind(&SModel3d::renderFunc, this);
     
+    if (strcmp(getName().c_str(), "Model") == 0) {
+//        CCLOG("Drawing model");
+    }
     _totalSModel3dToRender++;
     
     renderer->addCommand(&_renderCommand);
@@ -115,9 +115,7 @@ void SModel3d::testRenderFunc() {}
 
 void SModel3d::buildVAO() {
     if (_vao) {
-        glDeleteVertexArrays(1, &_vao);
-        _vao = 0;
-        GL::bindVAO(0);
+        clearVAO();
     }
     
     glGenVertexArrays(1, &_vao);
@@ -143,6 +141,14 @@ void SModel3d::buildVAO() {
     GL::bindVAO(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void SModel3d::clearVAO() {
+    if (_vao) {
+        glDeleteVertexArrays(1, &_vao);
+        _vao = 0;
+        GL::bindVAO(0);
+    }
 }
 
 void SModel3d::updateUniforms() {
@@ -198,6 +204,7 @@ void SModel3d::clearDrawStates() {
         // Temporary solution to split 2d and 3d
         if (_totalSModel3dRendered >= _totalSModel3dToRender) {
             glClear(GL_DEPTH_BUFFER_BIT);
+            glDisable(GL_DEPTH_TEST);
             _totalSModel3dRendered = 0;
             _totalSModel3dToRender = 0;
         }

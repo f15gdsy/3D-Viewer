@@ -51,6 +51,8 @@ struct SUniform {
 class SShaderProgram : public cocos2d::Ref {
     
 public:
+    ~SShaderProgram ();
+    
     static SShaderProgram* create (std::string vertexShaderPath, std::string fragmentShaderPath);
     
     GLuint inline getProgramId () {return _programId;}

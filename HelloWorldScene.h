@@ -29,6 +29,10 @@ private:
     Node* createAxisSystem ();
     Node* createFloor (int size, float gridSize);
     Node* createUI ();
+    Samurai::SModel3d* createModel (const std::string &filename);
+    Samurai::SModel3d* createBoundingBox (Samurai::SModel3d* model);
+    
+    void setCurrentModel (Samurai::SModel3d* model, Samurai::SModel3d* boundingBox);
     
 private:
     // UI
@@ -48,6 +52,7 @@ private:
     void flatRender (cocos2d::Ref* sender);
     void pointRender (cocos2d::Ref* sender);
     void toggleProjection (cocos2d::Ref* sender);
+    void changeModel (cocos2d::Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

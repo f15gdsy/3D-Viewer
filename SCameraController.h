@@ -36,6 +36,8 @@ public:
         return _usePerspective;
     }
     
+    void updateMatrices ();
+    
     Mat4 getProjectionMatrix () {
         if (_usePerspective) {
             return _projectionMatrix;

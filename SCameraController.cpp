@@ -46,7 +46,6 @@ bool SCameraController::init(Node* target) {
     
     // Camera position initialization
     Size winSize = Director::getInstance()->getWinSize();
-    float zEye = Director::getInstance()->getZEye();
     _position.x = winSize.width / 2;
     _position.y = winSize.height / 2;
     _position.z = 50;
@@ -138,6 +137,11 @@ void SCameraController::setPerspective(bool perspective) {
         _usePerspective = perspective;
         updateProjectionMatrix();
     }
+}
+
+void SCameraController::updateMatrices() {
+    updateViewMatrix();
+    updateProjectionMatrix();
 }
 
 

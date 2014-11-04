@@ -23,9 +23,7 @@ class SMesh;
 class SShaderProgram;
 
 class SModel3d : public cocos2d::Node {
-public:
-    SModel3d();
-    
+public:    
     static SModel3d* create(const std::string &modelPath);
     static SModel3d* create(const std::string &modelPath, SShaderProgram* shaderProgram);
     
@@ -55,6 +53,7 @@ protected:
     void renderFunc ();
     void testRenderFunc ();
     void buildVAO ();
+    void clearVAO ();
     void updateUniforms ();
     void updateDrawStates ();
     void clearDrawStates ();
