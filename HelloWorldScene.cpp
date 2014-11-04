@@ -240,7 +240,7 @@ void HelloWorld::setCurrentModel(Samurai::SModel3d* model, Samurai::SModel3d* bo
 Node* HelloWorld::createTut() {
     Node* container = Node::create();
     
-    std::string tutMessage = "1. left button DRAG to rotate model.";
+    std::string tutMessage = "3. left button DRAG to rotate model.";
     auto text = Label::createWithTTF(tutMessage, FONT_FILE, TUT_FONT_SIZE);
     text->setColor(Color3B(255, 255, 255));
     text->setPosition(TUT_MSG_POS_X, TUT_MSG_POS_Y);
@@ -258,7 +258,7 @@ Node* HelloWorld::createTut() {
     
     container->addChild(text);
     
-    tutMessage = "3. right button DRAG to move camera.";
+    tutMessage = "1. right button DRAG to move camera.";
     text = Label::createWithTTF(tutMessage, FONT_FILE, TUT_FONT_SIZE);
     text->setColor(Color3B(255, 255, 255));
     text->setPosition(TUT_MSG_POS_X, TUT_MSG_POS_Y - TUT_MSG_POS_Y_UNIT * 2);
