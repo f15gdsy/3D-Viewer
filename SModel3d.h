@@ -39,6 +39,10 @@ public:
     void setColor (cocos2d::Vec3 color) {
         _color = color;
     }
+    
+    void setLight (cocos2d::Vec3 lightPosition) {
+        _lightPosition = lightPosition;
+    }
 
     SMesh* mesh;
     
@@ -67,6 +71,7 @@ protected:
     bool _depthTestEnabled = true;
     
     cocos2d::Vec3 _color;
+    cocos2d::Vec3 _lightPosition;
     
     static int _totalSModel3dToRender;
     static int _totalSModel3dRendered;

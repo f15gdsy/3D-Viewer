@@ -67,6 +67,9 @@ bool SModel3d::init(const std::string &modelPath, Samurai::SShaderProgram *shade
     
     setShader(shaderProgram);
     
+    _lightPosition = Vec3(100, 100, 100);
+    _color = Vec3(1, 1, 0);
+    
     return true;
 }
 
@@ -160,7 +163,7 @@ void SModel3d::updateUniforms() {
     
     SUniform* uniform = _shaderProgram->getUniform("LightPosition_world");
     if (uniform) {
-        glUniform3f(uniform->index, 100, 100, 100);
+        glUniform3f(uniform->index, _lightPosition.x, _lightPosition.y, _lightPosition.z);
     }
     
     uniform = _shaderProgram->getUniform("InversedTransposedModelMatrix");

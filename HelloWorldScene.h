@@ -31,6 +31,7 @@ private:
     Node* createUI ();
     Samurai::SModel3d* createModel (const std::string &filename);
     Samurai::SModel3d* createBoundingBox (Samurai::SModel3d* model);
+    Node* createTut ();
     
     void setCurrentModel (Samurai::SModel3d* model, Samurai::SModel3d* boundingBox);
     
@@ -54,6 +55,7 @@ private:
     void toggleProjection (cocos2d::Ref* sender);
     void changeModel (cocos2d::Ref* sender);
     void changeColor (cocos2d::Ref* sender);
+    void changeLight (cocos2d::Ref* sneder);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

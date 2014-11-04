@@ -18,6 +18,10 @@
 #define MODEL_BTN_POS_Y             600
 #define FONT_FILE                   "PressStart2P.ttf"
 #define FONT_SIZE                   14
+#define TUT_FONT_SIZE               12
+#define TUT_MSG_POS_X               240
+#define TUT_MSG_POS_Y               10
+#define TUT_MSG_POS_Y_UNIT          -40
 
 USING_NS_CC;
 USING_NS_S;
@@ -46,13 +50,17 @@ bool HelloWorld::init()
         return false;
     }
     
+    Director::getInstance()->setDisplayStats(false);
+    
     FileUtils::getInstance()->addSearchPath("Models");
+    FileUtils::getInstance()->addSearchPath("fonts");
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     // Create UI
     this->addChild(createUI(), 1);
+    this->addChild(createTut());
 
     // Create 3D stuff
     _container3D = Node::create();
@@ -67,7 +75,7 @@ bool HelloWorld::init()
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     
     // Create Default Model
-    SModel3d* model = createModel("cap.txt");
+    SModel3d* model = createModel("knot.txt");
     SModel3d* boundingBox = createBoundingBox(model);
     setCurrentModel(model, boundingBox);
     
@@ -229,9 +237,40 @@ void HelloWorld::setCurrentModel(Samurai::SModel3d* model, Samurai::SModel3d* bo
     _containerModel->setRotation3D(Vec3(0, 0, 0));
 }
 
-Node* HelloWorld::createUI() {
-    FileUtils::getInstance()->addSearchPath("fonts");
+Node* HelloWorld::createTut() {
+    Node* container = Node::create();
     
+    std::string tutMessage = "1. left button DRAG to rotate model.";
+    auto text = Label::createWithTTF(tutMessage, FONT_FILE, TUT_FONT_SIZE);
+    text->setColor(Color3B(255, 255, 255));
+    text->setPosition(TUT_MSG_POS_X, TUT_MSG_POS_Y);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    
+    container->addChild(text);
+    
+    tutMessage = "2. middle button SCROLL to zoom     ";
+    text = Label::createWithTTF(tutMessage, FONT_FILE, TUT_FONT_SIZE);
+    text->setColor(Color3B(255, 255, 255));
+    text->setPosition(TUT_MSG_POS_X, TUT_MSG_POS_Y - TUT_MSG_POS_Y_UNIT);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    
+    container->addChild(text);
+    
+    tutMessage = "3. right button DRAG to move camera.";
+    text = Label::createWithTTF(tutMessage, FONT_FILE, TUT_FONT_SIZE);
+    text->setColor(Color3B(255, 255, 255));
+    text->setPosition(TUT_MSG_POS_X, TUT_MSG_POS_Y - TUT_MSG_POS_Y_UNIT * 2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    
+    container->addChild(text);
+    
+    return container;
+}
+
+Node* HelloWorld::createUI() {
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
     auto menu = Menu::create();
@@ -262,7 +301,7 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Smooth Render", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Smooth", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -277,7 +316,7 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Wireframe Render", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Wireframe", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -292,7 +331,7 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Flat Render", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Flat", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -307,7 +346,7 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Point Render", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Point", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -322,7 +361,7 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Toggle Projection", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Projection", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -386,6 +425,55 @@ Node* HelloWorld::createUI() {
     
     menu->addChild(button);
 
+    // --------Light Position-------
+    // Left
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeLight, this));
+    button->setName("left");
+//    button->setColor(Color3B(255, 255, 0));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X - COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 9);
+    
+    text = Label::createWithTTF("L", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    menu->addChild(button);
+    
+    // Middle
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeLight, this));
+    button->setName("middle");
+//    button->setColor(Color3B(0, 255, 255));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 9);
+    
+    text = Label::createWithTTF("M", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    menu->addChild(button);
+    
+    
+    // Right
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeLight, this));
+    button->setName("right");
+//    button->setColor(Color3B(255, 0, 255));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X + COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 9);
+    
+    text = Label::createWithTTF("R", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    menu->addChild(button);
     
     // --------Bunny Model-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
@@ -560,4 +648,20 @@ void HelloWorld::changeColor(cocos2d::Ref *sender) {
     }
     
     _model->setColor(color);
+}
+
+void HelloWorld::changeLight(cocos2d::Ref *sender) {
+    Node* senderNode = (Node *) sender;
+    Vec3 lightPosition;
+    if (strcmp(senderNode->getName().c_str(), "left") == 0) {
+        lightPosition = Vec3(100, 100, 100);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "middle") == 0) {
+        lightPosition = Vec3(480, 400, 200);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "right") == 0) {
+        lightPosition = Vec3(800, 400, 200);
+    }
+    
+    _model->setLight(lightPosition);
 }
