@@ -72,7 +72,7 @@ void SCameraController::onMouseScrolled(cocos2d::Event *event) {
     _position.z = _position.z + scollY;
     updateViewMatrix();
     
-    _orthoSize -= scollY;
+    _orthoSize += scollY;
     updateProjectionMatrix();
 }
 
