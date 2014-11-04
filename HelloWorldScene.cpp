@@ -20,7 +20,7 @@
 #define FONT_SIZE                   14
 #define TUT_FONT_SIZE               12
 #define TUT_MSG_POS_X               240
-#define TUT_MSG_POS_Y               10
+#define TUT_MSG_POS_Y               100
 #define TUT_MSG_POS_Y_UNIT          -40
 
 USING_NS_CC;
@@ -49,9 +49,7 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
-    Director::getInstance()->setDisplayStats(false);
-    
+        
     FileUtils::getInstance()->addSearchPath("Models");
     FileUtils::getInstance()->addSearchPath("fonts");
     
