@@ -53,6 +53,7 @@ private:
     void pointRender (cocos2d::Ref* sender);
     void toggleProjection (cocos2d::Ref* sender);
     void changeModel (cocos2d::Ref* sender);
+    void changeColor (cocos2d::Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

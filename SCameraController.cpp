@@ -55,6 +55,9 @@ bool SCameraController::init(Node* target) {
     
     _up = Vec3(0, 1, 0);
     
+    _orthoSize = winSize.width / 8;
+    _orthoRatio = winSize.height / winSize.width;
+    
     updateViewMatrix();
     updateProjectionMatrix();
     
@@ -68,6 +71,9 @@ void SCameraController::onMouseScrolled(cocos2d::Event *event) {
     // Scroll
     _position.z = _position.z + scollY;
     updateViewMatrix();
+    
+    _orthoSize -= scollY;
+    updateProjectionMatrix();
 }
 
 void SCameraController::onMousePressed(cocos2d::Event *event) {
@@ -129,7 +135,7 @@ void SCameraController::updateProjectionMatrix() {
     
     Mat4::createPerspective(60, winSize.width / winSize.height, 10, zEye + winSize.height / 2, &_projectionMatrix);
     
-    Mat4::createOrthographicOffCenter(-winSize.width/8, winSize.width/8, -winSize.height/8, winSize.height/8, 0, 1024, &_orthographicMatrix);
+    Mat4::createOrthographicOffCenter(-_orthoSize, _orthoSize, -_orthoSize * _orthoRatio, _orthoSize * _orthoRatio, 0, 1024, &_orthographicMatrix);
 }
 
 void SCameraController::setPerspective(bool perspective) {

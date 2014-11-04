@@ -71,6 +71,8 @@ private:
     Vec3 _center;
     Vec3 _up;
     float _toTargetAngle;
+    float _orthoSize;
+    float _orthoRatio;
     
     Mat4 _projectionMatrix;
     Mat4 _orthographicMatrix;

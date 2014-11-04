@@ -11,10 +11,13 @@
 #include "SPrimitiveCylinder.h"
 #include "SPrimitiveCone.h"
 
-#define BTN_POS_X           850
-#define BTN_POS_Y_UNIT      60
-#define FONT_FILE           "PressStart2P.ttf"
-#define FONT_SIZE           14
+#define FUNC_BTN_POS_X              850
+#define FUNC_BTN_POS_Y_UNIT         60
+#define COLOR_BTN_POS_X_UNIT        48
+#define MODEL_BTN_POS_X_UNIT        150
+#define MODEL_BTN_POS_Y             600
+#define FONT_FILE                   "PressStart2P.ttf"
+#define FONT_SIZE                   14
 
 USING_NS_CC;
 USING_NS_S;
@@ -58,6 +61,8 @@ bool HelloWorld::init()
     
     _containerModel = Node::create();
     _container3D->addChild(_containerModel);
+    
+    _containerModel->setPosition3D(Vec3(9, 9, 8));
     
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     
@@ -238,7 +243,7 @@ Node* HelloWorld::createUI() {
     auto button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::toggleBoundingBox, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT);
     
     menu->addChild(button);
 
@@ -253,7 +258,7 @@ Node* HelloWorld::createUI() {
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::smoothRender, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 2);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 2);
     
     menu->addChild(button);
     
@@ -268,7 +273,7 @@ Node* HelloWorld::createUI() {
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::wireFrameRender, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 3);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 3);
     
     menu->addChild(button);
     
@@ -283,7 +288,7 @@ Node* HelloWorld::createUI() {
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::flatRender, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 4);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 4);
     
     menu->addChild(button);
     
@@ -298,7 +303,7 @@ Node* HelloWorld::createUI() {
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::pointRender, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 5);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 5);
     
     menu->addChild(button);
     
@@ -313,7 +318,7 @@ Node* HelloWorld::createUI() {
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::toggleProjection, this));
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 6);
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 6);
     
     menu->addChild(button);
     
@@ -324,12 +329,70 @@ Node* HelloWorld::createUI() {
     text->setVerticalAlignment(TextVAlignment::BOTTOM);
     button->addChild(text);
     
+    // --------Change Color-------
+    // Red
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("red");
+    button->setColor(Color3B(255, 0, 0));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X - COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 7);
+    
+    menu->addChild(button);
+    
+    // Green
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("green");
+    button->setColor(Color3B(0, 255, 0));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 7);
+    
+    menu->addChild(button);
+
+    
+    // Blue
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("blue");
+    button->setColor(Color3B(0, 0, 255));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X + COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 7);
+    
+    menu->addChild(button);
+    
+    // Yello
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("yellow");
+    button->setColor(Color3B(255, 255, 0));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X - COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 8);
+    
+    menu->addChild(button);
+    
+    // Cyan
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("cyan");
+    button->setColor(Color3B(0, 255, 255));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X, FUNC_BTN_POS_Y_UNIT * 8);
+    
+    menu->addChild(button);
+    
+    
+    // Megenta
+    button = MenuItemImage::create("button_2_default.png", "button_2_pressed.png", CC_CALLBACK_1(HelloWorld::changeColor, this));
+    button->setName("megenta");
+    button->setColor(Color3B(255, 0, 255));
+    buttonSize = button->getContentSize();
+    button->setPosition(FUNC_BTN_POS_X + COLOR_BTN_POS_X_UNIT, FUNC_BTN_POS_Y_UNIT * 8);
+    
+    menu->addChild(button);
+
+    
     // --------Bunny Model-------
     button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
     button->setName("bunny.txt");
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 7);
+    button->setPosition(MODEL_BTN_POS_X_UNIT * 1, MODEL_BTN_POS_Y);
     
     menu->addChild(button);
     
@@ -345,11 +408,59 @@ Node* HelloWorld::createUI() {
     button->setName("cap.txt");
     
     buttonSize = button->getContentSize();
-    button->setPosition(BTN_POS_X, BTN_POS_Y_UNIT * 8);
+    button->setPosition(MODEL_BTN_POS_X_UNIT * 2, MODEL_BTN_POS_Y);
     
     menu->addChild(button);
     
-    text = Label::createWithTTF("Bunny", FONT_FILE, FONT_SIZE);
+    text = Label::createWithTTF("Cap", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    // --------Eight Model-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
+    button->setName("eight.txt");
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(MODEL_BTN_POS_X_UNIT * 3, MODEL_BTN_POS_Y);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Eight", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    // --------Knot Model-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
+    button->setName("knot.txt");
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(MODEL_BTN_POS_X_UNIT * 4, MODEL_BTN_POS_Y);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Knot", FONT_FILE, FONT_SIZE);
+    text->setColor(Color3B(1, 1, 1));
+    text->setPosition(buttonSize.width/2, buttonSize.height/2);
+    text->setHorizontalAlignment(TextHAlignment::RIGHT);
+    text->setVerticalAlignment(TextVAlignment::BOTTOM);
+    button->addChild(text);
+    
+    // --------Gargoyle Model-------
+    button = MenuItemImage::create("button_1_default.png", "button_1_pressed.png", CC_CALLBACK_1(HelloWorld::changeModel, this));
+    button->setName("gargoyle.txt");
+    
+    buttonSize = button->getContentSize();
+    button->setPosition(MODEL_BTN_POS_X_UNIT * 5, MODEL_BTN_POS_Y);
+    
+    menu->addChild(button);
+    
+    text = Label::createWithTTF("Gargoyle", FONT_FILE, FONT_SIZE);
     text->setColor(Color3B(1, 1, 1));
     text->setPosition(buttonSize.width/2, buttonSize.height/2);
     text->setHorizontalAlignment(TextHAlignment::RIGHT);
@@ -424,4 +535,29 @@ void HelloWorld::changeModel (cocos2d::Ref* sender) {
     _cameraController->updateMatrices();
     
     smoothRender(nullptr);
+}
+
+void HelloWorld::changeColor(cocos2d::Ref *sender) {
+    Node* senderNode = (Node *) sender;
+    Vec3 color;
+    if (strcmp(senderNode->getName().c_str(), "red") == 0) {
+        color = Vec3(1, 0, 0);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "green") == 0) {
+        color = Vec3(0, 1, 0);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "blue") == 0) {
+        color = Vec3(0, 0, 1);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "yellow") == 0) {
+        color = Vec3(1, 1, 0);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "cyan") == 0) {
+        color = Vec3(0, 1, 1);
+    }
+    else if (strcmp(senderNode->getName().c_str(), "megenta") == 0) {
+        color = Vec3(1, 0, 1);
+    }
+    
+    _model->setColor(color);
 }

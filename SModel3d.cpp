@@ -174,7 +174,7 @@ void SModel3d::updateUniforms() {
     
     uniform = _shaderProgram->getUniform("S_Color");
     if (uniform) {
-        glUniform4f(uniform->index, _color.x, _color.y, _color.z, 1);
+        glUniform3f(uniform->index, _color.x, _color.y, _color.z);
     }
 }
 

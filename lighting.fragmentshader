@@ -19,7 +19,7 @@ void main()
     float brightness = dot(normal, surfaceToLight) / (length(surfaceToLight) * length(normal));
     brightness = clamp(brightness, 0.0, 1.0);
 
-    gl_FragColor = vec4(brightness * 1.0 * vec3(0.4, 0.6, 0), 1.0);
+    gl_FragColor = vec4(brightness * 1.0 * S_Color, 1.0);
 
     // gl_FragColor = vec4(Normal_model, 1);
 	// Output color = red
